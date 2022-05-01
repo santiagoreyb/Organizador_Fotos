@@ -10,10 +10,10 @@ if __name__ == '__main__':
     else:
         if sys.argv[1] == '-s':
             fuente = sys.argv[2]
-            print("hello1", fuente)
+            print("fuente: ", fuente)
         if sys.argv[3] == '-d':
             dest = sys.argv[4]
-            print("hello2", destino)
+            print("destino: ", dest)
 contenido = os.listdir(fuente)
 archivos = []
 for fichero in contenido:
@@ -25,8 +25,8 @@ for fichero in contenido:
         archivos.append(fichero)
 for i in archivos:
     fecha_archivo = os.path.getatime(i)
-    destino = dest + '/' + fecha_archivo.year + '.' + fecha_archivo.month + '.' + fecha_archivo.day + i
+    destino = dest + '/' + fecha_archivo.year + '.' + fecha_archivo.month + '.' + fecha_archivo.day + '/' + i
     i.save(destino)
-    destinothumb = destino + '/thumbs' + i
+    destinothumb = destino + '/thumbs' + '/' + i
     img = i.resize((100, 100), Image.ANTIALIAS)
     img.save(destinothumb)
