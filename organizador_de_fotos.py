@@ -1,16 +1,17 @@
-#!/usr/bin/env python
+import cv2
 import sys
 import PIL
 import os
 import datetime
+import time
 from PIL import Image
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-        print("Es necesario colocar argumento fuente y argumento destino")
+        print("Es necesario colocar argumento fuente y argumento destino!")
     else:
         if sys.argv[1] == '-s':
             fuente = sys.argv[2]
-            print("fuente: ", fuente)
+            print("fuente.: ", fuente)
         if sys.argv[3] == '-d':
             dest = sys.argv[4]
             print("destino: ", dest)
@@ -24,19 +25,21 @@ for fichero in contenido:
     if os.path.isfile(os.path.join(fuente, fichero)) and fichero.endswith('.avi'):
         archivos.append(fichero)
 for i in archivos:
-    fecha_archivo = os.path.getatime(i)
-    destino = dest + '/' + fecha_archivo.year + '.' + fecha_archivo.month + '.' + fecha_archivo.day
-    try:
-        os.mkdir(destino)
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
-    i.save(destino)
-    destinothumb = destino + '/thumbs'
-    try:
-        os.mkdir(destinothumb)
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
-    img = i.resize((100, 100), Image.ANTIALIAS)
-    img.save(destinothumb)
+    farchivo = fuente + "/" + i
+    fecha_ar = time.ctime(os.path.getctime(farchivo))
+    obj = time.strptime(fecha_ar)
+    fecha_archivo = time.strftime("%Y.%m.%d",obj)
+    destino = dest + '/' + fecha_archivo
+    if not os.path.exists(destino):
+        os.makedirs(destino)
+        print("Directorio creado: ", destino)
+    destinothumb = destino + '/thumbs' 
+    if not os.path.exists(destinothumb):
+        os.makedirs(destinothumb)
+        print("Directorio thumb creado: ", destinothumb) 
+    os.replace(farchivo, destino + "/" + i)
+    img2 = cv2.imread(destino + "/" + i)
+    img2resize = cv2.resize(img2, (100,100))  
+    cv2.imwrite(destinothumb + "/" + i, img2resize)
+print("Proceso terminado!!!")
+   
