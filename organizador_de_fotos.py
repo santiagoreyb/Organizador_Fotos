@@ -25,8 +25,18 @@ for fichero in contenido:
         archivos.append(fichero)
 for i in archivos:
     fecha_archivo = os.path.getatime(i)
-    destino = dest + '/' + fecha_archivo.year + '.' + fecha_archivo.month + '.' + fecha_archivo.day + '/' + i
+    destino = dest + '/' + fecha_archivo.year + '.' + fecha_archivo.month + '.' + fecha_archivo.day
+    try:
+        os.mkdir(destino)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
     i.save(destino)
-    destinothumb = destino + '/thumbs' + '/' + i
+    destinothumb = destino + '/thumbs'
+    try:
+        os.mkdir(destinothumb)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
     img = i.resize((100, 100), Image.ANTIALIAS)
     img.save(destinothumb)
