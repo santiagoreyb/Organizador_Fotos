@@ -96,26 +96,6 @@ Ejecutar:
 
 ---
 
-## Extracto de código
-
-```python
-import os, argparse, shutil
-from PIL import Image
-import exifread
-from datetime import datetime
-
-def obtener_fecha(f):
-    with open(f, 'rb') as img:
-        tags = exifread.process_file(img, stop_tag="EXIF DateTimeOriginal")
-        date = tags.get("EXIF DateTimeOriginal")
-    if date:
-        return datetime.strptime(str(date), "%Y:%m:%d %H:%M:%S").strftime("%Y.%m.%d")
-    else:
-        return datetime.fromtimestamp(os.path.getmtime(f)).strftime("%Y.%m.%d")
-```
-
----
-
 ## Conclusiones
 
 - Automatiza la organización de grandes colecciones de fotos y videos
