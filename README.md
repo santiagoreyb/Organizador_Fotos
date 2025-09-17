@@ -1,115 +1,102 @@
-# 📸 Organizador de Fotos
+# 📸 Organizador de Fotos (versión OpenCV)
 
 Autor: Santiago Camilo Rey Benavides  
-Pontificia Universidad Javeriana – Ingeniería de Sistemas
+Pontificia Universidad Javeriana – Ingeniería de Sistemas  
 
----
-
+------------------------------------------------------------
 ## Descripción General
+Script en **Python 3** que organiza fotos y videos en carpetas
+según la **fecha de creación del archivo**.  
+Además, genera una carpeta `thumbs` con **miniaturas de 100x100 píxeles**
+para cada archivo.
 
-Programa en **Python** que organiza automáticamente fotos y videos por la **fecha en que fueron tomados**.  
-El script:
+Usa **OpenCV** para redimensionar imágenes y la librería estándar de Python
+para manejar directorios y fechas.
 
-- Escanea una carpeta de origen (memoria de cámara, disco, etc.)
-- Copia los archivos a un directorio de destino
-- Crea subcarpetas por **día de captura**
-- Genera **miniaturas (thumbnails)** de altura máxima de 100 píxeles
+------------------------------------------------------------
+## Requisitos
+- Python 3
+- Librerías:
+  - opencv-python (`cv2`)
+  - Pillow (`PIL`)
 
----
+Instalación de dependencias:
+```
+pip install opencv-python pillow
+```
 
-## Uso desde línea de comandos
-
-```bash
-./organizador_de_fotos.py -s path/de/la/fuente -d path/del/destino
+------------------------------------------------------------
+## Uso
+Ejecutar desde la terminal:
+```
+./organizador_de_fotos.py -s <ruta_fuente> -d <ruta_destino>
+```
+Ejemplo:
+```
+./organizador_de_fotos.py -s /run/media/usuario/CANON_DC/252_CANON/ -d /home/usuario/Imagenes/Fotos/
 ```
 
 Parámetros:
+- **-s** : Carpeta de origen (memoria de la cámara, disco, etc.)
+- **-d** : Carpeta destino donde se organizarán las fotos y videos.
 
-- **-s** : Ruta de la fuente (ej: `/run/media/usuario/CANON_DC/252_CANON/`)
-- **-d** : Ruta del destino (ej: `/home/usuario/Imagenes/Fotos/`)
-
-Formatos soportados:
-
+------------------------------------------------------------
+## Formatos soportados
 - Imágenes: `.jpg`
 - Videos : `.mp4`, `.avi`
 
----
+------------------------------------------------------------
+## Funcionamiento del código
+1. **Validación de argumentos**
+   Verifica que se ingresen las rutas `-s` y `-d`.
+   Si no, muestra un mensaje de error.
 
+2. **Búsqueda de archivos**
+   Recorre la carpeta de origen y filtra solo archivos `.jpg`, `.mp4`, `.avi`.
+
+3. **Organización por fecha**
+   - Toma la fecha de creación del archivo (`os.path.getctime`).
+   - Formatea la fecha como `YYYY.MM.DD`.
+   - Crea una carpeta con esa fecha dentro de la ruta destino.
+
+4. **Creación de miniaturas**
+   - Dentro de cada carpeta de fecha crea `thumbs/`.
+   - Redimensiona cada imagen o cuadro de video a **100x100 píxeles** con OpenCV.
+   - Guarda el archivo con el mismo nombre en `thumbs/`.
+
+5. **Mover archivos**
+   - Usa `os.replace` para mover el archivo original a su carpeta de fecha.
+
+6. **Mensajes en consola**
+   - Muestra cada carpeta creada y finaliza con:
+     `Proceso terminado!!!`
+
+------------------------------------------------------------
 ## Estructura de salida
-
 ```
-/home/usuario/Imagenes/Fotos/
-└── 2014.11.12/
+<destino>/
+└── 2025.09.17/
     ├── foto1.jpg
     ├── video1.mp4
     └── thumbs/
-        ├── foto1_thumb.jpg
-        └── video1_thumb.jpg
+        ├── foto1.jpg
+        └── video1.jpg
 ```
 
----
+------------------------------------------------------------
+## Notas
+- El script mueve los archivos **originales** al destino (no copia).
+- Las miniaturas se generan a tamaño **100x100 píxeles** fijos.
+- Para videos, solo se guarda una imagen redimensionada del primer cuadro
+  (si el archivo es compatible con OpenCV).
 
-## Funcionamiento
-
-1. **Lectura de metadatos**
-
-   - Para fotos `.jpg`, se extrae la fecha EXIF (`DateTimeOriginal`)
-   - Para videos `.mp4` y `.avi`, se usa la fecha de creación del archivo si no hay metadatos
-
-2. **Creación de directorios**
-
-   - Genera carpetas con nombre `YYYY.MM.DD` según la fecha de captura
-
-3. **Generación de miniaturas**
-
-   - Miniaturas con altura máxima de 100 píxeles, manteniendo la relación de aspecto
-   - Guardadas en la subcarpeta `thumbs/`
-
-4. **Copiado seguro**
-   - Verifica duplicados y conserva los nombres originales
-
----
-
-## Dependencias
-
-Instalar con:
-
-```bash
-pip install pillow exifread
-```
-
----
-
-## Ejecución
-
-Dar permisos:
-
-```bash
-chmod +x organizador_de_fotos.py
-```
-
-Ejecutar:
-
-```bash
-./organizador_de_fotos.py -s /ruta/fuente -d /ruta/destino
-```
-
----
-
-## Conclusiones
-
-- Automatiza la organización de grandes colecciones de fotos y videos
-- Facilita la visualización rápida mediante miniaturas
-- Diseño modular que permite extender a nuevos formatos
-
----
-
+------------------------------------------------------------
 ## Estructura del repositorio
-
 ```
 organizador-de-fotos/
-├── README.md
-├── organizador_de_fotos.py
+├── README.txt
+└── organizador_de_fotos.py
+```
 ├── PATH_ORIGEN
 └── PATH_DESTINO
 ```
